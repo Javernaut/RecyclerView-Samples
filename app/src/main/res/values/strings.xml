@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RecyclerViewTest</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="remove_10">Remove 10</string>
+    <string name="add_several">Add several</string>
+    <string name="move_to_first">Move to first</string>
+</resources>

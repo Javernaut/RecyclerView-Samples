@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="orientations">
+        <item>Vertical</item>
+        <item>Horizontal</item>
+    </array>
+    <array name="funcs">
+        <item>Sin</item>
+        <item>Cos</item>
+    </array>
+    <array name="lineModes">
+        <item>Behind</item>
+        <item>Over</item>
+    </array>
+</resources>
