@@ -45,7 +45,7 @@ public class SingleLineDecorator extends RecyclerView.ItemDecoration {
     private void drawLine(Canvas c, RecyclerView parent) {
         final int childCount = parent.getChildCount();
         if (childCount > 1) {
-            if (!parent.getItemAnimator().isRunning()) {
+            if (!isItemAnimatorRunning(parent.getItemAnimator())) {
                 lines.ensureSize(childCount);
                 lines.reset();
 
@@ -58,8 +58,16 @@ public class SingleLineDecorator extends RecyclerView.ItemDecoration {
                     lines.addLine(prevChild, newChild);
                     prevChild = newChild;
                 }
+                lines.draw(c);
             }
-            lines.draw(c);
+        }
+    }
+
+    private boolean isItemAnimatorRunning(RecyclerView.ItemAnimator itemAnimator) {
+        if (itemAnimator instanceof MyItemAnimator) {
+            return itemAnimator.isRunning() && !((MyItemAnimator) itemAnimator).onlyChangeAnimationsAreRunning();
+        } else {
+            return itemAnimator.isRunning();
         }
     }
 

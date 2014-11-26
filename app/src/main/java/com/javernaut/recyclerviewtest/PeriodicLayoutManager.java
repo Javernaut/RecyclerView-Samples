@@ -24,11 +24,13 @@ public class PeriodicLayoutManager extends LinearLayoutManager {
 
     public void setPeriodicFunc(PeriodicFunc periodicFunc) {
         this.periodicFunc = periodicFunc;
+        requestSimpleAnimationsInNextLayout();
         requestLayout();
     }
 
     @Override
     public void setOrientation(int orientation) {
+        requestSimpleAnimationsInNextLayout();
         super.setOrientation(orientation);
         oppositeOrientationHelper = OrientationHelper.createOrientationHelper(this,
                 orientation == OrientationHelper.HORIZONTAL ? OrientationHelper.VERTICAL : OrientationHelper.HORIZONTAL);
