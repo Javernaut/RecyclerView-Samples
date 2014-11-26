@@ -3,14 +3,10 @@ package com.javernaut.recyclerviewtest;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ItemAnimator;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.View;
 
 /**
- * Animates elements changing and adding as horizontal flipping.
- * I consider a bug in {@link RecyclerView}
- * because newHolder in {@link ItemAnimator#animateChange(ViewHolder, ViewHolder)} is always null.
+ * Animates elements changing as horizontal flipping.
  */
 public class MyItemAnimator extends AbstractItemAnimator {
     public MyItemAnimator() {
@@ -47,9 +43,11 @@ public class MyItemAnimator extends AbstractItemAnimator {
         }).start();
         if (newView != null) {
             ViewCompat.setScaleX(newView, 0);
+            ViewCompat.setAlpha(newView, 1);
             mChangeAnimations.add(changeInfo.newHolder);
             final ViewPropertyAnimatorCompat newViewAnimation = ViewCompat.animate(newView);
-            newViewAnimation.translationX(0).translationY(0).setDuration(getChangeDuration()).
+            newViewAnimation.translationX(0).translationY(0).setStartDelay(getChangeDuration()).setDuration
+                    (getChangeDuration()).
                     scaleX(1).setListener(new VpaListenerAdapter() {
                 @Override
                 public void onAnimationStart(View view) {
@@ -67,34 +65,5 @@ public class MyItemAnimator extends AbstractItemAnimator {
                 }
             }).start();
         }
-    }
-
-    @Override
-    protected void animateAddImpl(final RecyclerView.ViewHolder holder) {
-        final View view = holder.itemView;
-        ViewCompat.setScaleX(view, 0);
-        ViewCompat.setAlpha(view, 1);
-        mAddAnimations.add(holder);
-        final ViewPropertyAnimatorCompat animation = ViewCompat.animate(view);
-        animation.scaleX(1).setDuration(getAddDuration()).
-                setListener(new VpaListenerAdapter() {
-                    @Override
-                    public void onAnimationStart(View view) {
-                        dispatchAddStarting(holder);
-                    }
-                    @Override
-                    public void onAnimationCancel(View view) {
-                        ViewCompat.setAlpha(view, 1);
-                    }
-
-                    @Override
-                    public void onAnimationEnd(View view) {
-                        animation.setListener(null);
-                        ViewCompat.setScaleX(view, 1);
-                        dispatchAddFinished(holder);
-                        mAddAnimations.remove(holder);
-                        dispatchFinishedWhenDone();
-                    }
-                }).start();
     }
 }

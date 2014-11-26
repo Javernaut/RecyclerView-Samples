@@ -45,19 +45,20 @@ public class SingleLineDecorator extends RecyclerView.ItemDecoration {
     private void drawLine(Canvas c, RecyclerView parent) {
         final int childCount = parent.getChildCount();
         if (childCount > 1) {
-            lines.ensureSize(childCount);
-            lines.reset();
+            if (!parent.getItemAnimator().isRunning()) {
+                lines.ensureSize(childCount);
+                lines.reset();
 
-            List<View> children = childrenSortedByPosition(parent);
+                List<View> children = childrenSortedByPosition(parent);
 
-            View prevChild = children.get(0);
+                View prevChild = children.get(0);
 
-            for (int i = 1; i < childCount; i++) {
-                final View newChild = children.get(i);
-                lines.addLine(prevChild, newChild);
-                prevChild = newChild;
+                for (int i = 1; i < childCount; i++) {
+                    final View newChild = children.get(i);
+                    lines.addLine(prevChild, newChild);
+                    prevChild = newChild;
+                }
             }
-
             lines.draw(c);
         }
     }

@@ -66,15 +66,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyItemViewHolder> {
 
     @Override
     public long getItemId(int position) {
-        return items.get(position).getColor();
+        return items.get(position).hashCode();
     }
 
     public void remove10() {
         if (items.size() > TEN) {
             for (int i = 0; i < TEN; i++) {
-                items.remove(TEN);
+                items.remove(0);
             }
-            notifyItemRangeRemoved(TEN, TEN);
+            notifyItemRangeRemoved(0, TEN);
         }
     }
 

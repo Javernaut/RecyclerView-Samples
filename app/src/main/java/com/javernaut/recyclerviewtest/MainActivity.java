@@ -39,6 +39,7 @@ public class MainActivity extends ActionBarActivity {
         setSupportActionBar(theToolbar);
         setTitle(null);
 
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager = new PeriodicLayoutManager(this));
         recyclerView.setAdapter(myAdapter = adapterBySavedInstanceState(savedInstanceState));
         recyclerView.setItemAnimator(new MyItemAnimator());
