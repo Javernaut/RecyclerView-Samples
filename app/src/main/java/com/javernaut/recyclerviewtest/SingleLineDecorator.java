@@ -1,28 +1,29 @@
 package com.javernaut.recyclerviewtest;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
+/**
+ * Draws a line through centers of all child of a RecyclerView.
+ */
 public class SingleLineDecorator extends RecyclerView.ItemDecoration {
-    private Paint paint;
-    private Path path;
     private boolean drawOver;
+    private Lines lines;
 
     public SingleLineDecorator(Context context) {
-        Resources resources = context.getResources();
-        paint = createPaint(resources.getDimensionPixelSize(R.dimen.single_line_width));
-        path = new Path();
+        lines = new Lines(createPaint(context.getResources().getDimensionPixelSize(R.dimen.single_line_width)));
         drawOver = false;
     }
 
+    /**
+     * @param drawOver if true the line will be drawn over children. If false - behind.
+     */
     public void setDrawOver(boolean drawOver) {
         this.drawOver = drawOver;
     }
@@ -44,31 +45,24 @@ public class SingleLineDecorator extends RecyclerView.ItemDecoration {
     private void drawLine(Canvas c, RecyclerView parent) {
         final int childCount = parent.getChildCount();
         if (childCount > 1) {
-            path.reset();
+            lines.ensureSize(childCount);
+            lines.reset();
 
             List<View> children = childrenSortedByPosition(parent);
 
-            final View firstChild = children.get(0);
-            path.moveTo(centerXOfView(firstChild), centerYOfView(firstChild));
+            View prevChild = children.get(0);
 
             for (int i = 1; i < childCount; i++) {
-                final View child = children.get(i);
-                path.lineTo(centerXOfView(child), centerYOfView(child));
+                final View newChild = children.get(i);
+                lines.addLine(prevChild, newChild);
+                prevChild = newChild;
             }
 
-            c.drawPath(path, paint);
+            lines.draw(c);
         }
     }
 
-    private static Paint createPaint(int width) {
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(width);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setAntiAlias(true);
-        return paint;
-    }
-
+    // Yes, allocating and sorting while drawing. But it isn't harmful.
     private static List<View> childrenSortedByPosition(RecyclerView parent) {
         List<View> result = new ArrayList<View>(parent.getChildCount());
         for (int pos = 0; pos < parent.getChildCount(); pos++) {
@@ -81,17 +75,68 @@ public class SingleLineDecorator extends RecyclerView.ItemDecoration {
     private static final Comparator<View> POSITION_COMPARATOR = new Comparator<View>() {
         @Override
         public int compare(View lhs, View rhs) {
-            RecyclerView.LayoutParams lParams = (RecyclerView.LayoutParams) lhs.getLayoutParams();
-            RecyclerView.LayoutParams rParams = (RecyclerView.LayoutParams) rhs.getLayoutParams();
-            return rParams.getViewPosition() - lParams.getViewPosition();
+            return getPosition(rhs) - getPosition(lhs);
+        }
+
+        private int getPosition(View view) {
+            return ((RecyclerView.LayoutParams) view.getLayoutParams()).getViewPosition();
         }
     };
 
-    private static int centerXOfView(View view) {
-        return view.getLeft() + view.getWidth() / 2;
+    private static Paint createPaint(int width) {
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(width);
+        paint.setAntiAlias(true);
+        return paint;
     }
 
-    private static int centerYOfView(View view) {
-        return view.getTop() + view.getHeight() / 2;
+    private static final class Lines {
+        private static final int POINTS_PER_LINE = 4;
+        private float[] points;
+        private Paint paint;
+        private int offset;
+
+        private Lines(Paint paint) {
+            this.paint = paint;
+        }
+
+        public void ensureSize(int childCount) {
+            if (childCount > 1 && (points == null || points.length < sizeForChildCount(childCount))) {
+                points = new float[sizeForChildCount(childCount)];
+            }
+        }
+
+        public void reset() {
+            offset = 0;
+            Arrays.fill(points, 0);
+        }
+
+        public void addLine(View src, View dest) {
+            addCoordinate(centerXOfView(src));
+            addCoordinate(centerYOfView(src));
+            addCoordinate(centerXOfView(dest));
+            addCoordinate(centerYOfView(dest));
+        }
+
+        private void addCoordinate(float coordinate) {
+            points[offset++] = coordinate;
+        }
+
+        public void draw(Canvas canvas) {
+            canvas.drawLines(points, 0, offset, paint);
+        }
+
+        private static int sizeForChildCount(int childCount) {
+            return (childCount - 1) * POINTS_PER_LINE;
+        }
+
+        private static int centerXOfView(View view) {
+            return view.getLeft() + view.getWidth() / 2;
+        }
+
+        private static int centerYOfView(View view) {
+            return view.getTop() + view.getHeight() / 2;
+        }
     }
 }
