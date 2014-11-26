@@ -2,7 +2,6 @@ package com.javernaut.recyclerviewtest;
 
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /**
@@ -14,11 +13,12 @@ public class MyItemAnimator extends AbstractItemAnimator {
     }
 
     @Override
-    protected void animateChangeImpl(final AbstractItemAnimator.ChangeInfo changeInfo) {
-        final RecyclerView.ViewHolder holder = changeInfo.oldHolder;
-        final View view = holder.itemView;
-        final RecyclerView.ViewHolder newHolder = changeInfo.newHolder;
-        final View newView = newHolder != null ? newHolder.itemView : null;
+    protected void animateChangeImpl(final ChangeInfo changeInfo) {
+        animateChangeDisappearing(changeInfo);
+    }
+
+    private void animateChangeDisappearing(final ChangeInfo changeInfo) {
+        final View view = changeInfo.oldHolder.itemView;
         mChangeAnimations.add(changeInfo.oldHolder);
 
         final ViewPropertyAnimatorCompat oldViewAnim = ViewCompat.animate(view).setDuration(
@@ -36,17 +36,22 @@ public class MyItemAnimator extends AbstractItemAnimator {
                 ViewCompat.setScaleX(view, 1);
                 ViewCompat.setTranslationX(view, 0);
                 ViewCompat.setTranslationY(view, 0);
+                animateChangeAppearing(changeInfo);
                 dispatchChangeFinished(changeInfo.oldHolder, true);
                 mChangeAnimations.remove(changeInfo.oldHolder);
                 dispatchFinishedWhenDone();
             }
         }).start();
+    }
+
+    private void animateChangeAppearing(final ChangeInfo changeInfo) {
+        final View newView = changeInfo.newHolder != null ? changeInfo.newHolder.itemView : null;
         if (newView != null) {
             ViewCompat.setScaleX(newView, 0);
             ViewCompat.setAlpha(newView, 1);
             mChangeAnimations.add(changeInfo.newHolder);
             final ViewPropertyAnimatorCompat newViewAnimation = ViewCompat.animate(newView);
-            newViewAnimation.translationX(0).translationY(0).setStartDelay(getChangeDuration()).setDuration
+            newViewAnimation.translationX(0).translationY(0).setDuration
                     (getChangeDuration()).
                     scaleX(1).setListener(new VpaListenerAdapter() {
                 @Override
