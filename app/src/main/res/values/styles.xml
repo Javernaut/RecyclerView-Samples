@@ -10,6 +10,6 @@
 
     <style name="ToolbarSpinner">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">@dimen/toolbar_element_height</item>
+        <item name="android:layout_height">match_parent</item>
     </style>
 </resources>

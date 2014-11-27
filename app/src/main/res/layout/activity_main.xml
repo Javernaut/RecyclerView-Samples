@@ -7,8 +7,8 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/theToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Spinner
+        android:layout_height="@dimen/abc_action_bar_default_height_material">
+    <Spinner
             android:id="@+id/periodicFunc"
             android:entries="@array/funcs"
             style="@style/ToolbarSpinner"/>

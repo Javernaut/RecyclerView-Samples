@@ -12,11 +12,11 @@ import android.view.View;
  * with {@link android.support.v7.widget.LinearLayoutManager}.
  * Copied from another project.
  */
-public class MyItemDecorator extends RecyclerView.ItemDecoration {
+public class DividerDecorator extends RecyclerView.ItemDecoration {
 
     private Drawable mDivider;
 
-    public MyItemDecorator(Context context) {
+    public DividerDecorator(Context context) {
         mDivider = context.getResources().getDrawable(android.R.drawable.divider_horizontal_bright);
     }
 

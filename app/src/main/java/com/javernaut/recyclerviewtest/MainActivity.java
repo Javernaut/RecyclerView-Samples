@@ -1,5 +1,6 @@
 package com.javernaut.recyclerviewtest;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -21,6 +22,8 @@ import java.util.List;
 public class MainActivity extends ActionBarActivity {
 
     private static final String COLORS = "key_colors";
+    private static RecyclerView.ItemDecoration dividerDecorator;
+    private static boolean useDividers = false; // simple to use a static field than handle save-restore cycle.
 
     @InjectView(R.id.theToolbar)
     Toolbar theToolbar;
@@ -43,8 +46,8 @@ public class MainActivity extends ActionBarActivity {
         recyclerView.setLayoutManager(layoutManager = new PeriodicLayoutManager(this));
         recyclerView.setAdapter(myAdapter = adapterBySavedInstanceState(savedInstanceState));
         recyclerView.setItemAnimator(new MyItemAnimator());
-        recyclerView.addItemDecoration(new MyItemDecorator(this));
         recyclerView.addItemDecoration(lineDecorator = new SingleLineDecorator(this));
+        setDividerVisibility(useDividers);
     }
 
     private MyAdapter adapterBySavedInstanceState(Bundle savedInstanceState) {
@@ -85,6 +88,12 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.useDividers).setChecked(useDividers);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.remove:
@@ -96,9 +105,24 @@ public class MainActivity extends ActionBarActivity {
             case R.id.toFirst:
                 recyclerView.smoothScrollToPosition(0);
                 return true;
+            case R.id.useDividers:
+                item.setChecked(!item.isChecked());
+                setDividerVisibility(item.isChecked());
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void setDividerVisibility(boolean visible) {
+        RecyclerView.ItemDecoration decorator = getDividerDecorator(this);
+        if (visible) {
+            recyclerView.addItemDecoration(decorator);
+        } else {
+            recyclerView.removeItemDecoration(decorator);
+        }
+        useDividers = visible;
+        recyclerView.invalidate();
     }
 
     private static List<MyItem> makeData() {
@@ -107,5 +131,12 @@ public class MainActivity extends ActionBarActivity {
             result.add(new MyItem(Color.rgb(pos, pos, pos)));
         }
         return result;
+    }
+
+    private static RecyclerView.ItemDecoration getDividerDecorator(Context context) {
+        if (dividerDecorator == null) {
+            dividerDecorator = new DividerDecorator(context);
+        }
+        return dividerDecorator;
     }
 }

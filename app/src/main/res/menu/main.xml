@@ -9,4 +9,8 @@
     <item
         android:id="@+id/toFirst"
         android:title="@string/move_to_first"/>
+    <item
+        android:id="@+id/useDividers"
+        android:checkable="true"
+        android:title="@string/use_dividers"/>
 </menu>
