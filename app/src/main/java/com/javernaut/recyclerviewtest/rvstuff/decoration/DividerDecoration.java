@@ -1,4 +1,4 @@
-package com.javernaut.recyclerviewtest.stuff;
+package com.javernaut.recyclerviewtest.rvstuff.decoration;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -12,11 +12,11 @@ import android.view.View;
  * with {@link android.support.v7.widget.LinearLayoutManager}.
  * Copied from another project.
  */
-public class DividerDecorator extends RecyclerView.ItemDecoration {
+public class DividerDecoration extends RecyclerView.ItemDecoration {
 
     private Drawable mDivider;
 
-    public DividerDecorator(Context context) {
+    public DividerDecoration(Context context) {
         mDivider = context.getResources().getDrawable(android.R.drawable.divider_horizontal_bright);
     }
 

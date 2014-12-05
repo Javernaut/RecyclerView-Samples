@@ -1,12 +1,12 @@
-package com.javernaut.recyclerviewtest.stuff;
+package com.javernaut.recyclerviewtest.model;
 
 /**
  * Some model item for valuable data.
  */
-public class MyItem {
+public class PeriodicItem {
     private int color;
 
-    public MyItem(int color) {
+    public PeriodicItem(int color) {
         this.color = color;
     }
 

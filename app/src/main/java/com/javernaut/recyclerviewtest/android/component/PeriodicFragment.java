@@ -1,4 +1,4 @@
-package com.javernaut.recyclerviewtest.component;
+package com.javernaut.recyclerviewtest.android.component;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -7,16 +7,20 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import butterknife.InjectView;
 import com.javernaut.recyclerviewtest.R;
-import com.javernaut.recyclerviewtest.stuff.*;
+import com.javernaut.recyclerviewtest.model.PeriodicItem;
+import com.javernaut.recyclerviewtest.rvstuff.adapter.PeriodicAdapter;
+import com.javernaut.recyclerviewtest.rvstuff.animator.PeriodicItemAnimator;
+import com.javernaut.recyclerviewtest.rvstuff.decoration.DividerDecoration;
+import com.javernaut.recyclerviewtest.rvstuff.decoration.SingleLineDecoration;
+import com.javernaut.recyclerviewtest.rvstuff.layoutmanager.PeriodicLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeriodicFragment extends ButterKnifeFragment {
+public class PeriodicFragment extends BaseFragment {
 
     private static final String KEY_COLORS = "key_colors";
     private static final String KEY_DIVIDERS = "key_dividers";
@@ -27,19 +31,13 @@ public class PeriodicFragment extends ButterKnifeFragment {
     @InjectView(R.id.recyclerView)
     RecyclerView recyclerView;
 
-    private MyAdapter myAdapter;
+    private PeriodicAdapter periodicAdapter;
     private PeriodicLayoutManager layoutManager;
-    private SingleLineDecorator lineDecorator;
+    private SingleLineDecoration lineDecorator;
 
     @Override
     protected final int getLayoutResId() {
         return R.layout.fragment_periodic;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -49,18 +47,18 @@ public class PeriodicFragment extends ButterKnifeFragment {
         recyclerView.setHasFixedSize(true);
 
         recyclerView.setLayoutManager(layoutManager = new PeriodicLayoutManager(getActivity()));
-        recyclerView.setAdapter(myAdapter = adapterBySavedState(savedInstanceState));
+        recyclerView.setAdapter(periodicAdapter = adapterBySavedState(savedInstanceState));
 
-        recyclerView.setItemAnimator(new MyItemAnimator());
-        recyclerView.addItemDecoration(lineDecorator = new SingleLineDecorator(getActivity()));
+        recyclerView.setItemAnimator(new PeriodicItemAnimator());
+        recyclerView.addItemDecoration(lineDecorator = new SingleLineDecoration(getActivity()));
 
         setDividerVisibility(useDividersBySavedState(savedInstanceState));
     }
 
-    private MyAdapter adapterBySavedState(Bundle savedInstanceState) {
+    private PeriodicAdapter adapterBySavedState(Bundle savedInstanceState) {
         return savedInstanceState == null ?
-                new MyAdapter(getActivity(), makeData()) :
-                MyAdapter.fromIntegers(getActivity(), savedInstanceState.getIntegerArrayList(KEY_COLORS));
+                new PeriodicAdapter(getActivity(), makeData()) :
+                PeriodicAdapter.fromIntegers(getActivity(), savedInstanceState.getIntegerArrayList(KEY_COLORS));
     }
 
     private static boolean useDividersBySavedState(Bundle savedInstanceState) {
@@ -70,14 +68,13 @@ public class PeriodicFragment extends ButterKnifeFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putIntegerArrayList(KEY_COLORS, myAdapter.toIntegers());
+        outState.putIntegerArrayList(KEY_COLORS, periodicAdapter.toIntegers());
         outState.putInt(KEY_DIVIDERS, useDividers ? 1 : 0);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.periodic, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    protected final int getOptionMenuResId() {
+        return R.menu.periodic;
     }
 
     @Override
@@ -111,10 +108,10 @@ public class PeriodicFragment extends ButterKnifeFragment {
                 return true;
 
             case R.id.remove:
-                myAdapter.remove10();
+                periodicAdapter.remove10();
                 return true;
             case R.id.add:
-                myAdapter.addSeveral();
+                periodicAdapter.addSeveral();
                 return true;
 
             case R.id.toFirst:
@@ -155,17 +152,17 @@ public class PeriodicFragment extends ButterKnifeFragment {
         recyclerView.invalidate();
     }
 
-    private static List<MyItem> makeData() {
-        List<MyItem> result = new ArrayList<>();
+    private static List<PeriodicItem> makeData() {
+        List<PeriodicItem> result = new ArrayList<>();
         for (int pos = 0; pos < 255; pos++) {
-            result.add(new MyItem(Color.rgb(pos, pos, pos)));
+            result.add(new PeriodicItem(Color.rgb(pos, pos, pos)));
         }
         return result;
     }
 
     private static RecyclerView.ItemDecoration getDividerDecorator(Context context) {
         if (dividerDecorator == null) {
-            dividerDecorator = new DividerDecorator(context);
+            dividerDecorator = new DividerDecoration(context);
         }
         return dividerDecorator;
     }

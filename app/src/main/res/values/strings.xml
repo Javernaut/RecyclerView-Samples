@@ -15,4 +15,7 @@
     <string name="menu_line_mode">Line mode</string>
     <string name="menu_behind">Behind</string>
     <string name="menu_over">Over</string>
+    <string name="menu_shuffle">Shuffle</string>
+    <string name="menu_15">15</string>
+    <string name="menu_100">100</string>
 </resources>

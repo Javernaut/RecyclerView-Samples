@@ -1,4 +1,4 @@
-package com.javernaut.recyclerviewtest.stuff;
+package com.javernaut.recyclerviewtest.rvstuff.layoutmanager;
 
 import android.content.Context;
 import android.os.Parcel;

@@ -1,4 +1,4 @@
-package com.javernaut.recyclerviewtest.stuff;
+package com.javernaut.recyclerviewtest.rvstuff.animator;
 
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
@@ -7,8 +7,8 @@ import android.view.View;
 /**
  * Animates elements changing as horizontal flipping.
  */
-public class MyItemAnimator extends AbstractItemAnimator {
-    public MyItemAnimator() {
+public class PeriodicItemAnimator extends AbstractItemAnimator {
+    public PeriodicItemAnimator() {
         setSupportsChangeAnimations(true);
     }
 

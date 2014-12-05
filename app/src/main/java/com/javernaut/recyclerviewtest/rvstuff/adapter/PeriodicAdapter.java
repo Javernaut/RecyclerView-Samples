@@ -1,12 +1,13 @@
-package com.javernaut.recyclerviewtest.stuff;
+package com.javernaut.recyclerviewtest.rvstuff.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.javernaut.recyclerviewtest.R;
+import com.javernaut.recyclerviewtest.model.PeriodicItem;
+import com.javernaut.recyclerviewtest.rvstuff.viewholder.PeriodicViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,39 +16,35 @@ import java.util.Random;
 /**
  * Entity that coordinates model and its presentation.
  */
-public class MyAdapter extends RecyclerView.Adapter<MyItemViewHolder> {
+public class PeriodicAdapter extends BaseAdapter<PeriodicItem, PeriodicViewHolder> {
 
     public static final int MAX_COLOR_VALUE = 256;
     public static final int TEN = 10;
 
-    private LayoutInflater inflater;
-    private List<MyItem> items;
-
-    public MyAdapter(Context context, List<MyItem> items) {
-        inflater = LayoutInflater.from(context);
-        this.items = items;
-        setHasStableIds(true);
+    public PeriodicAdapter(Context context, List<PeriodicItem> items) {
+        super(context, items);
     }
 
-    public static MyAdapter fromIntegers(Context context, List<Integer> integers) {
-        List<MyItem> colors = new ArrayList<MyItem>(integers.size());
+    public static PeriodicAdapter fromIntegers(Context context, List<Integer> integers) {
+        List<PeriodicItem> colors = new ArrayList<PeriodicItem>(integers.size());
         for (Integer integer : integers) {
-            colors.add(new MyItem(integer));
+            colors.add(new PeriodicItem(integer));
         }
-        return new MyAdapter(context, colors);
+        return new PeriodicAdapter(context, colors);
     }
 
     public ArrayList<Integer> toIntegers() {
         ArrayList<Integer> result = new ArrayList<Integer>(items.size());
-        for (MyItem myItem : items) {
+        for (PeriodicItem myItem : items) {
             result.add(myItem.getColor());
         }
         return result;
     }
 
     @Override
-    public MyItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        MyItemViewHolder viewHolder = new MyItemViewHolder(inflater.inflate(R.layout.item_my, parent, false));
+    public PeriodicViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        PeriodicViewHolder viewHolder = new PeriodicViewHolder(LAYOUT_INFLATER.inflate(R.layout.item_periodic,
+                parent, false));
 
         viewHolder.itemView.setOnClickListener(ITEM_CLICK_LISTENER);
         viewHolder.itemView.setOnLongClickListener(ITEM_LONG_CLICK_LISTENER);
@@ -56,7 +53,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyItemViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(MyItemViewHolder holder, int position) {
+    public void onBindViewHolder(PeriodicViewHolder holder, int position) {
         holder.setColor(items.get(position).getColor());
     }
 
@@ -84,7 +81,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyItemViewHolder> {
         int pos = random.nextInt(5) + 1;
         int amount = random.nextInt(5) + 1;
         for (int i = 0; i < amount; i++) {
-            items.add(pos, new MyItem(newRandColor()));
+            items.add(pos, new PeriodicItem(newRandColor()));
         }
         notifyItemRangeInserted(pos, amount);
     }
@@ -95,7 +92,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyItemViewHolder> {
     }
 
     private void toggleColor(int position) {
-        MyItem myItem = items.get(position);
+        PeriodicItem myItem = items.get(position);
         myItem.setColor(newRandColor());
         notifyItemChanged(position);
     }

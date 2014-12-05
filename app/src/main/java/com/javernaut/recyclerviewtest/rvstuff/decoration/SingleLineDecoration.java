@@ -1,4 +1,4 @@
-package com.javernaut.recyclerviewtest.stuff;
+package com.javernaut.recyclerviewtest.rvstuff.decoration;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -7,17 +7,18 @@ import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import com.javernaut.recyclerviewtest.R;
+import com.javernaut.recyclerviewtest.rvstuff.animator.PeriodicItemAnimator;
 
 import java.util.*;
 
 /**
  * Draws a line through centers of all child of a RecyclerView.
  */
-public class SingleLineDecorator extends RecyclerView.ItemDecoration {
+public class SingleLineDecoration extends RecyclerView.ItemDecoration {
     private boolean drawOver;
-    private Lines lines;
+    private final Lines lines;
 
-    public SingleLineDecorator(Context context) {
+    public SingleLineDecoration(Context context) {
         lines = new Lines(createPaint(context.getResources().getDimensionPixelSize(R.dimen.single_line_width)));
         drawOver = false;
     }
@@ -65,8 +66,8 @@ public class SingleLineDecorator extends RecyclerView.ItemDecoration {
     }
 
     private boolean isItemAnimatorRunning(RecyclerView.ItemAnimator itemAnimator) {
-        if (itemAnimator instanceof MyItemAnimator) {
-            return itemAnimator.isRunning() && !((MyItemAnimator) itemAnimator).onlyChangeAnimationsAreRunning();
+        if (itemAnimator instanceof PeriodicItemAnimator) {
+            return itemAnimator.isRunning() && !((PeriodicItemAnimator) itemAnimator).onlyChangeAnimationsAreRunning();
         } else {
             return itemAnimator.isRunning();
         }
@@ -74,7 +75,7 @@ public class SingleLineDecorator extends RecyclerView.ItemDecoration {
 
     // Yes, allocating and sorting while drawing. But it isn't harmful.
     private static List<View> childrenSortedByPosition(RecyclerView parent) {
-        List<View> result = new ArrayList<View>(parent.getChildCount());
+        List<View> result = new ArrayList<>(parent.getChildCount());
         for (int pos = 0; pos < parent.getChildCount(); pos++) {
             result.add(parent.getChildAt(pos));
         }

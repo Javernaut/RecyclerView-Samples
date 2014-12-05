@@ -1,4 +1,4 @@
-package com.javernaut.recyclerviewtest.component;
+package com.javernaut.recyclerviewtest.android.component;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -36,8 +36,11 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
-        drawerList.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
-                new String[]{"PeriodicLayoutManager"}));
+        drawerList.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice,
+                new String[]{"Periodic LayoutManager", "Drag And Drop"}));
+        if (savedInstanceState == null) {
+            drawerList.setItemChecked(0, true);
+        }
         theDrawer.setDrawerListener(mDrawerToggle = makeActionBarDrawerToggle(theDrawer, this));
 
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -74,7 +77,7 @@ public class MainActivity extends ActionBarActivity {
 
     private static ActionBarDrawerToggle makeActionBarDrawerToggle(DrawerLayout drawerLayout,
                                                                    final FragmentActivity activity) {
-        return new ActionBarDrawerToggle(this, drawerLayout, 0, 0) {
+        return new ActionBarDrawerToggle(activity, drawerLayout, 0, 0) {
 
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
@@ -88,24 +91,23 @@ public class MainActivity extends ActionBarActivity {
         };
     }
 
-
     @SuppressWarnings("unused")
     @OnItemClick(R.id.drawerList)
-    void onDrawerListItemSelected(int position) {
-        if (drawerList.getCheckedItemPosition() != position) {
-            Fragment fragment;
-            switch (position) {
-                case 0:
-                    fragment = new PeriodicFragment();
-                    break;
-                default:
-                    fragment = null;
-                    break;
-            }
-            if (fragment != null) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
-            }
-            drawerList.setItemChecked(position, true);
+    void onDrawerListItemClicked(int position) {
+        Fragment fragment;
+        switch (position) {
+            case 0:
+                fragment = new PeriodicFragment();
+                break;
+            case 1:
+                fragment = new DragAndDropFragment();
+                break;
+            default:
+                fragment = null;
+                break;
+        }
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
         }
 
         theDrawer.closeDrawer(drawerList);

@@ -1,4 +1,4 @@
-package com.javernaut.recyclerviewtest.stuff;
+package com.javernaut.recyclerviewtest.rvstuff.viewholder;
 
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -8,11 +8,11 @@ import android.view.View;
 /**
  * ViewHolder for our elements.
  */
-public class MyItemViewHolder extends RecyclerView.ViewHolder {
+public class PeriodicViewHolder extends RecyclerView.ViewHolder {
 
-    private ShapeDrawable shapeDrawable;
+    private final ShapeDrawable shapeDrawable;
 
-    public MyItemViewHolder(View itemView) {
+    public PeriodicViewHolder(View itemView) {
         super(itemView);
         itemView.setBackground(shapeDrawable = new ShapeDrawable(new OvalShape()));
     }

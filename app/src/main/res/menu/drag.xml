@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_shuffle"
+        android:title="@string/menu_shuffle"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_15"
+        android:title="@string/menu_15"
+        android:orderInCategory="100"/>
+    <item
+        android:id="@+id/action_100"
+        android:title="@string/menu_100"
+        android:orderInCategory="100"/>
+</menu>
