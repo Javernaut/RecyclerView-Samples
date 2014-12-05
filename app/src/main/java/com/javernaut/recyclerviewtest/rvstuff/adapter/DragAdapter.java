@@ -10,13 +10,14 @@ import com.javernaut.recyclerviewtest.android.view.SwapWithShadowView;
 import com.javernaut.recyclerviewtest.model.DragItem;
 import com.javernaut.recyclerviewtest.rvstuff.viewholder.DragViewHolder;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class DragAdapter extends BaseAdapter<DragItem, DragViewHolder> {
 
-    private long dragItemId = -1;
+    private static final int NO_VALUE = -1;
+
+    private long dragItemId = NO_VALUE;
 
     public DragAdapter(Context context, List<DragItem> myItems) {
         super(context, myItems);
@@ -29,17 +30,14 @@ public class DragAdapter extends BaseAdapter<DragItem, DragViewHolder> {
     }
 
     public void shuffle() {
-        List<DragItem> previousItems = new ArrayList<>(items);
         Collections.shuffle(items);
-        for (int pos = 0; pos < items.size(); pos++) {
-            notifyItemMoved(pos, items.indexOf(previousItems.get(pos)));
-        }
+        notifyDataSetChanged();
     }
 
     @Override
     public DragViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         DragViewHolder myViewHolder = new DragViewHolder(LAYOUT_INFLATER.inflate(R.layout.item_drag, viewGroup, false));
-        myViewHolder.itemView.setOnLongClickListener(onLongClickListener);
+        myViewHolder.itemView.setOnLongClickListener(ON_LONG_CLICK_LISTENER);
         return myViewHolder;
     }
 
@@ -52,12 +50,7 @@ public class DragAdapter extends BaseAdapter<DragItem, DragViewHolder> {
         ((SwapWithShadowView) myViewHolder.itemView).setShadowMode(getItemId(position) == dragItemId);
     }
 
-    @Override
-    public int getItemCount() {
-        return items.size();
-    }
-
-    private final View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
+    private final View.OnLongClickListener ON_LONG_CLICK_LISTENER = new View.OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
             RecyclerView recyclerView = (RecyclerView) v.getParent();
@@ -74,32 +67,34 @@ public class DragAdapter extends BaseAdapter<DragItem, DragViewHolder> {
     };
 
     /**
-     * Swaps the element with specific id and an element on a specific position
+     * Swaps currently dragged element with an element on a specific position
      */
-    public void swap(int childPosition) {
-        int pos2 = getPosForId(dragItemId);
-        if (pos2 != -1 && childPosition != pos2) {
-            Collections.swap(items, childPosition, pos2);
-            notifyDataSetChanged(); // works well
+    public void swapWithDragged(int childPosition) {
+        if (dragItemId != NO_VALUE) {
+            int pos2 = getPositionForItemId(dragItemId);
+            if (pos2 != NO_VALUE && childPosition != pos2) {
+                Collections.swap(items, childPosition, pos2);
+                notifyDataSetChanged(); // works well
+            }
         }
     }
 
-    private int getPosForId(long id) {
-        for (int i = 0; i < items.size(); i++) {
-            if (getItemId(i) == id) {
-                return i;
+    private int getPositionForItemId(long id) {
+        for (int pos = 0; pos < items.size(); pos++) {
+            if (getItemId(pos) == id) {
+                return pos;
             }
         }
-        return -1;
+        return NO_VALUE;
     }
 
     public void clearDragState(RecyclerView recyclerView) {
-        if (dragItemId != -1) {
+        if (dragItemId != NO_VALUE) {
             RecyclerView.ViewHolder draggedViewHolder = recyclerView.findViewHolderForItemId(dragItemId);
             if (draggedViewHolder != null) {
                 ((SwapWithShadowView) draggedViewHolder.itemView).animateShadowMode(false);
             }
-            dragItemId = -1;
+            dragItemId = NO_VALUE;
         }
     }
 }

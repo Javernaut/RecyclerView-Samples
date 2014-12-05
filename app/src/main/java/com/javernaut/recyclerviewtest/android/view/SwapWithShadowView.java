@@ -13,7 +13,7 @@ import com.javernaut.recyclerviewtest.R;
 public final class SwapWithShadowView extends FrameLayout {
 
     private static final int FADE_DURATION = 200;
-    private View background;
+    private View shadow;
 
     public SwapWithShadowView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -26,14 +26,14 @@ public final class SwapWithShadowView extends FrameLayout {
     }
 
     private void init() {
-        background = new View(getContext());
-        background.setBackgroundColor(getResources().getColor(R.color.accent));
-        ViewCompat.setAlpha(background, 0);
-        addView(background, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        shadow = new View(getContext());
+        shadow.setBackgroundColor(getResources().getColor(R.color.accent));
+        ViewCompat.setAlpha(shadow, 0);
+        addView(shadow, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
     }
 
     public void animateShadowMode(boolean shadowMode) {
-        animateAlpha(background, shadowMode ? 1 : 0);
+        animateAlpha(shadow, shadowMode ? 1 : 0);
         animateAlpha(getContentView(), shadowMode ? 0 : 1);
     }
 
@@ -42,7 +42,7 @@ public final class SwapWithShadowView extends FrameLayout {
     }
 
     public void setShadowMode(boolean shadowMode) {
-        ViewCompat.setAlpha(background, shadowMode ? 1 : 0);
+        ViewCompat.setAlpha(shadow, shadowMode ? 1 : 0);
         ViewCompat.setAlpha(getContentView(), shadowMode ? 0 : 1);
     }
 

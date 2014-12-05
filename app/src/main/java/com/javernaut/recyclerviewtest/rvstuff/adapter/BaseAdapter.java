@@ -23,12 +23,12 @@ abstract class BaseAdapter<I, T extends RecyclerView.ViewHolder> extends Recycle
     }
 
     @Override
-    public int getItemCount() {
+    public final int getItemCount() {
         return items.size();
     }
 
     @Override
-    public long getItemId(int position) {
+    public final long getItemId(int position) {
         return items.get(position).hashCode();
     }
 }

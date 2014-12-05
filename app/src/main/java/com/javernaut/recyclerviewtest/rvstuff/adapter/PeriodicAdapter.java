@@ -57,16 +57,6 @@ public class PeriodicAdapter extends BaseAdapter<PeriodicItem, PeriodicViewHolde
         holder.setColor(items.get(position).getColor());
     }
 
-    @Override
-    public int getItemCount() {
-        return items.size();
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return items.get(position).hashCode();
-    }
-
     public void remove10() {
         if (items.size() > TEN) {
             for (int i = 0; i < TEN; i++) {

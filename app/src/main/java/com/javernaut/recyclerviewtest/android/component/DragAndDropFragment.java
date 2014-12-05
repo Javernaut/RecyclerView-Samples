@@ -38,7 +38,7 @@ public class DragAndDropFragment extends BaseFragment {
     }
 
     @Override
-    protected int getOptionMenuResId() {
+    protected final int getOptionMenuResId() {
         return R.menu.drag;
     }
 
@@ -101,7 +101,7 @@ public class DragAndDropFragment extends BaseFragment {
                     if (!recyclerView.getItemAnimator().isRunning()) {
                         View child = recyclerView.findChildViewUnder(event.getX(), event.getY());
                         if (child != null) {
-                            dragAdapter.swap(recyclerView.getChildPosition(child));
+                            dragAdapter.swapWithDragged(recyclerView.getChildPosition(child));
                         }
                     }
 
@@ -129,6 +129,9 @@ public class DragAndDropFragment extends BaseFragment {
         }
     }
 
+    /**
+     * Helper class for permanent scrolling to up or down.
+     */
     private static class Scroller {
         private static final int DELAY = 100;
         private RecyclerView recyclerView;
