@@ -1,5 +1,8 @@
 package com.javernaut.recyclerviewtest.model;
 
+/**
+ * Wrapper on a string for items to drag.
+ */
 public class DragItem {
     private String text;
 

@@ -2,4 +2,7 @@
 <resources>
     <dimen name="circle_side">27dp</dimen>
     <dimen name="single_line_width">1.5dp</dimen>
+    <dimen name="drag_moving_offset">40dp</dimen>
+    <dimen name="scroll_per_tick">30dp</dimen>
+    <dimen name="drag_item_offset">10dp</dimen>
 </resources>

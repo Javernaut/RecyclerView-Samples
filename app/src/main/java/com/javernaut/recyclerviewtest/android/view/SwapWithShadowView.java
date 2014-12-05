@@ -1,12 +1,15 @@
 package com.javernaut.recyclerviewtest.android.view;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
+import com.javernaut.recyclerviewtest.R;
 
+/**
+ * Layout that replaces its child with a solid shadow.
+ */
 public final class SwapWithShadowView extends FrameLayout {
 
     private static final int FADE_DURATION = 200;
@@ -24,7 +27,7 @@ public final class SwapWithShadowView extends FrameLayout {
 
     private void init() {
         background = new View(getContext());
-        background.setBackgroundColor(Color.BLUE);
+        background.setBackgroundColor(getResources().getColor(R.color.accent));
         ViewCompat.setAlpha(background, 0);
         addView(background, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
     }

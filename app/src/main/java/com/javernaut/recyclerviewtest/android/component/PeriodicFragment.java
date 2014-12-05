@@ -8,7 +8,6 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import butterknife.InjectView;
 import com.javernaut.recyclerviewtest.R;
 import com.javernaut.recyclerviewtest.model.PeriodicItem;
 import com.javernaut.recyclerviewtest.rvstuff.adapter.PeriodicAdapter;
@@ -20,6 +19,9 @@ import com.javernaut.recyclerviewtest.rvstuff.layoutmanager.PeriodicLayoutManage
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fragment that displays a periodic graph.
+ */
 public class PeriodicFragment extends BaseFragment {
 
     private static final String KEY_COLORS = "key_colors";
@@ -28,23 +30,15 @@ public class PeriodicFragment extends BaseFragment {
     private static RecyclerView.ItemDecoration dividerDecorator;
     private boolean useDividers = false;
 
-    @InjectView(R.id.recyclerView)
-    RecyclerView recyclerView;
-
     private PeriodicAdapter periodicAdapter;
     private PeriodicLayoutManager layoutManager;
     private SingleLineDecoration lineDecorator;
 
     @Override
-    protected final int getLayoutResId() {
-        return R.layout.fragment_periodic;
-    }
-
-    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        recyclerView.setHasFixedSize(true);
+        recyclerView.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
 
         recyclerView.setLayoutManager(layoutManager = new PeriodicLayoutManager(getActivity()));
         recyclerView.setAdapter(periodicAdapter = adapterBySavedState(savedInstanceState));

@@ -64,7 +64,7 @@ public class DragAdapter extends BaseAdapter<DragItem, DragViewHolder> {
             RecyclerView.ViewHolder childViewHolder = recyclerView.getChildViewHolder(v);
             long childId = childViewHolder.getItemId();
             ClipData clipData = ClipData.newPlainText(null, String.valueOf(childId));
-            recyclerView.startDrag(clipData, new View.DragShadowBuilder(v), childId, 0);
+            recyclerView.startDrag(clipData, new View.DragShadowBuilder(v), null, 0);
             ((SwapWithShadowView) v).animateShadowMode(true);
 
             dragItemId = childId;
@@ -73,13 +73,14 @@ public class DragAdapter extends BaseAdapter<DragItem, DragViewHolder> {
         }
     };
 
-    public void swap(int childPosition, long itemId) {
-        int pos2 = getPosForId(itemId);
+    /**
+     * Swaps the element with specific id and an element on a specific position
+     */
+    public void swap(int childPosition) {
+        int pos2 = getPosForId(dragItemId);
         if (pos2 != -1 && childPosition != pos2) {
             Collections.swap(items, childPosition, pos2);
-            notifyDataSetChanged();
-            //notifyItemMoved(childPosition, pos2);
-            //notifyItemMoved(pos2, childPosition);
+            notifyDataSetChanged(); // works well
         }
     }
 

@@ -6,11 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.MenuItem;
 import android.view.View;
-import butterknife.InjectView;
 import com.javernaut.recyclerviewtest.R;
 import com.javernaut.recyclerviewtest.model.DragItem;
 import com.javernaut.recyclerviewtest.rvstuff.adapter.DragAdapter;
@@ -20,10 +18,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Fragment that displays elements, that can be moved by dragging.
+ */
 public class DragAndDropFragment extends BaseFragment {
 
-    @InjectView(R.id.recycler)
-    RecyclerView recyclerView;
     private DragAdapter dragAdapter;
 
     @Override
@@ -33,14 +32,9 @@ public class DragAndDropFragment extends BaseFragment {
                 getResources().getInteger(R.integer.column_count),
                 StaggeredGridLayoutManager.VERTICAL));
         recyclerView.setAdapter(dragAdapter = new DragAdapter(getActivity(), makeFakeData(100)));
-        recyclerView.addItemDecoration(new OffsetDecoration());
+        recyclerView.addItemDecoration(new OffsetDecoration(getActivity()));
         recyclerView.setOnDragListener(new MyDragListener(recyclerView, dragAdapter));
         recyclerView.setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING);
-    }
-
-    @Override
-    protected final int getLayoutResId() {
-        return R.layout.fragment_drag;
     }
 
     @Override
@@ -89,10 +83,13 @@ public class DragAndDropFragment extends BaseFragment {
         private final RecyclerView recyclerView;
         private final DragAdapter dragAdapter;
 
+        private final int dragMovingOffset;
+
         private MyDragListener(RecyclerView recyclerView, DragAdapter dragAdapter) {
             this.recyclerView = recyclerView;
             this.dragAdapter = dragAdapter;
             this.scroller = new Scroller(recyclerView);
+            this.dragMovingOffset = recyclerView.getResources().getDimensionPixelSize(R.dimen.drag_moving_offset);
         }
 
         @Override
@@ -104,40 +101,31 @@ public class DragAndDropFragment extends BaseFragment {
                     if (!recyclerView.getItemAnimator().isRunning()) {
                         View child = recyclerView.findChildViewUnder(event.getX(), event.getY());
                         if (child != null) {
-                            long id = getChildId(event);
-                            dragAdapter.swap(recyclerView.getChildPosition(child), id);
+                            dragAdapter.swap(recyclerView.getChildPosition(child));
                         }
                     }
 
-                    float y = event.getY();
-
-                    if (y < 100) {
+                    if (event.getY() < dragMovingOffset) {
                         scroller.startScrollUp();
-                    } else if (y > recyclerView.getHeight() - 100) {
+                    } else if (event.getY() > recyclerView.getHeight() - dragMovingOffset) {
                         scroller.startScrollDown();
                     } else {
                         scroller.stop();
                     }
 
-
                     return true;
                 case DragEvent.ACTION_DROP:
-                    scroller.stop();
-                    dragAdapter.clearDragState(recyclerView);
-                    return true;
-                case DragEvent.ACTION_DRAG_EXITED:
-                    scroller.stop();
-                    return true;
                 case DragEvent.ACTION_DRAG_ENDED:
-                    scroller.stop();
+                    finishDrag();
                     return true;
                 default:
                     return false;
             }
         }
 
-        private long getChildId(DragEvent event) {
-            return (long) event.getLocalState();
+        private void finishDrag() {
+            scroller.stop();
+            dragAdapter.clearDragState(recyclerView);
         }
     }
 
@@ -146,34 +134,35 @@ public class DragAndDropFragment extends BaseFragment {
         private RecyclerView recyclerView;
         private Handler handler = new Handler();
 
+        private final int SCROLL_PER_TICK;
+
         private int scrollValue;
         boolean posted = false;
 
         private Scroller(RecyclerView recyclerView) {
             this.recyclerView = recyclerView;
+            this.SCROLL_PER_TICK = recyclerView.getResources().getDimensionPixelSize(R.dimen.scroll_per_tick);
         }
 
         void startScrollDown() {
-            scrollValue = 50;
+            scrollValue = SCROLL_PER_TICK;
             rescheduleTask();
         }
 
         void startScrollUp() {
-            scrollValue = -50;
+            scrollValue = -SCROLL_PER_TICK;
             rescheduleTask();
         }
 
         private void rescheduleTask() {
             if (!posted) {
                 posted = true;
-                log("posting task");
                 handler.postDelayed(scrollerTask, DELAY);
             }
         }
 
         void stop() {
             if (posted) {
-                log("removing task");
                 handler.removeCallbacks(scrollerTask);
                 posted = false;
             }
@@ -186,9 +175,5 @@ public class DragAndDropFragment extends BaseFragment {
                 handler.postDelayed(this, DELAY);
             }
         };
-    }
-
-    private static void log(String msg) {
-        Log.e("SCROOOL", msg);
     }
 }

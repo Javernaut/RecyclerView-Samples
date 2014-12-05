@@ -6,6 +6,12 @@ import android.view.LayoutInflater;
 
 import java.util.List;
 
+/**
+ * Base class for adapters.
+ *
+ * @param <I> type of items in data collection
+ * @param <T> type of ViewHolder for parent class
+ */
 abstract class BaseAdapter<I, T extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<T> {
     protected final LayoutInflater LAYOUT_INFLATER;
     protected final List<I> items;
