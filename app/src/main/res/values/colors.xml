@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="primary">@android:color/holo_green_light</color>
-    <!--   darker variant for the status bar and contextual app bars -->
     <color name="primaryDark">@android:color/holo_green_dark</color>
-    <!--   theme UI controls like checkboxes and text fields -->
     <color name="accent">@android:color/holo_blue_light</color>
 </resources>

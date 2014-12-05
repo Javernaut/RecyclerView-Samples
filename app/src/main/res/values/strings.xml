@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">RecyclerViewTest</string>
+    <string name="app_name">RecyclerView</string>
     <string name="action_settings">Settings</string>
-
-    <string name="remove_10">Remove 10</string>
-    <string name="add_several">Add several</string>
-    <string name="move_to_first">Move to first</string>
-    <string name="use_dividers">Dividers</string>
+    <string name="menu_remove_10">Remove 10</string>
+    <string name="menu_add_several">Add several</string>
+    <string name="menu_move_to_first">Move to first</string>
+    <string name="menu_use_dividers">Dividers</string>
+    <string name="menu_function">Function</string>
+    <string name="menu_sine">Sin</string>
+    <string name="menu_cosine">Cos</string>
+    <string name="menu_orientation">Orientation</string>
+    <string name="menu_vertical">Vertical</string>
+    <string name="menu_horizontal">Horizontal</string>
+    <string name="menu_line_mode">Line mode</string>
+    <string name="menu_behind">Behind</string>
+    <string name="menu_over">Over</string>
 </resources>

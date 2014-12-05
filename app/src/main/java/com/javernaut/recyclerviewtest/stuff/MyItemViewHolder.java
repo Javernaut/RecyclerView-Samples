@@ -1,4 +1,4 @@
-package com.javernaut.recyclerviewtest;
+package com.javernaut.recyclerviewtest.stuff;
 
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;

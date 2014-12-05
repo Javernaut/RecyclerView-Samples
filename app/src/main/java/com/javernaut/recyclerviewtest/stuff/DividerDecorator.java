@@ -1,4 +1,4 @@
-package com.javernaut.recyclerviewtest;
+package com.javernaut.recyclerviewtest.stuff;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -22,14 +22,17 @@ public class DividerDecorator extends RecyclerView.ItemDecoration {
 
     @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
-        if (mDivider == null) { super.onDrawOver(c, parent, state); return; }
+        if (mDivider == null) {
+            super.onDrawOver(c, parent, state);
+            return;
+        }
 
         if (getOrientation(parent) == LinearLayoutManager.VERTICAL) {
             final int left = parent.getPaddingLeft();
             final int right = parent.getWidth() - parent.getPaddingRight();
             final int childCount = parent.getChildCount();
 
-            for (int i=1; i < childCount; i++) {
+            for (int i = 1; i < childCount; i++) {
                 final View child = parent.getChildAt(i);
                 final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
                 final int size = mDivider.getIntrinsicHeight();
@@ -43,7 +46,7 @@ public class DividerDecorator extends RecyclerView.ItemDecoration {
             final int bottom = parent.getHeight() - parent.getPaddingBottom();
             final int childCount = parent.getChildCount();
 
-            for (int i=1; i < childCount; i++) {
+            for (int i = 1; i < childCount; i++) {
                 final View child = parent.getChildAt(i);
                 final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
                 final int size = mDivider.getIntrinsicWidth();

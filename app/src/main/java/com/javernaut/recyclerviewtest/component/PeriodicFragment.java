@@ -1,32 +1,27 @@
-package com.javernaut.recyclerviewtest;
+package com.javernaut.recyclerviewtest.component;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnItemSelected;
+import com.javernaut.recyclerviewtest.R;
+import com.javernaut.recyclerviewtest.stuff.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Main and the only activity in the app.
- */
-public class MainActivity extends ActionBarActivity {
+public class PeriodicFragment extends ButterKnifeFragment {
 
     private static final String COLORS = "key_colors";
     private static RecyclerView.ItemDecoration dividerDecorator;
     private static boolean useDividers = false; // simple to use a static field than handle save-restore cycle.
 
-    @InjectView(R.id.theToolbar)
-    Toolbar theToolbar;
     @InjectView(R.id.recyclerView)
     RecyclerView recyclerView;
 
@@ -35,87 +30,111 @@ public class MainActivity extends ActionBarActivity {
     private SingleLineDecorator lineDecorator;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.inject(this);
-        setSupportActionBar(theToolbar);
-        setTitle(null);
+    protected final int getLayoutResId() {
+        return R.layout.fragment_periodic;
+    }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManager = new PeriodicLayoutManager(this));
+        recyclerView.setLayoutManager(layoutManager = new PeriodicLayoutManager(getActivity()));
         recyclerView.setAdapter(myAdapter = adapterBySavedInstanceState(savedInstanceState));
         recyclerView.setItemAnimator(new MyItemAnimator());
-        recyclerView.addItemDecoration(lineDecorator = new SingleLineDecorator(this));
+        recyclerView.addItemDecoration(lineDecorator = new SingleLineDecorator(getActivity()));
         setDividerVisibility(useDividers);
     }
 
     private MyAdapter adapterBySavedInstanceState(Bundle savedInstanceState) {
         return savedInstanceState == null ?
-                new MyAdapter(this, makeData()) :
-                MyAdapter.fromIntegers(this, savedInstanceState.getIntegerArrayList(COLORS));
+                new MyAdapter(getActivity(), makeData()) :
+                MyAdapter.fromIntegers(getActivity(), savedInstanceState.getIntegerArrayList(COLORS));
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putIntegerArrayList(COLORS, myAdapter.toIntegers());
     }
 
-    @SuppressWarnings("unused")
-    @OnItemSelected(R.id.orientation)
-    void onOrientationSelected(int position) {
-        layoutManager.setOrientation(position == 0 ? OrientationHelper.VERTICAL : OrientationHelper.HORIZONTAL);
-    }
-
-    @SuppressWarnings("unused")
-    @OnItemSelected(R.id.periodicFunc)
-    void onPeriodicFuncSelected(int position) {
-        layoutManager.setPeriodicFunc(position == 0 ? PeriodicLayoutManager.SIN : PeriodicLayoutManager.COS);
-    }
-
-    @SuppressWarnings("unused")
-    @OnItemSelected(R.id.lineMode)
-    void onLineModeSelected(int position) {
-        lineDecorator.setDrawOver(position == 1);
-        recyclerView.invalidateItemDecorations();
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.periodic, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
+    public void onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.useDividers).setChecked(useDividers);
-        return super.onPrepareOptionsMenu(menu);
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.vertical:
+                setLayoutDirection(OrientationHelper.VERTICAL);
+                return true;
+            case R.id.horizontal:
+                setLayoutDirection(OrientationHelper.HORIZONTAL);
+                return true;
+
+            case R.id.sin:
+                setPeriodicFunc(PeriodicLayoutManager.SIN);
+                return true;
+            case R.id.cos:
+                setPeriodicFunc(PeriodicLayoutManager.COS);
+                return true;
+
+            case R.id.over:
+                setLineMode(true);
+                return true;
+            case R.id.behind:
+                setLineMode(false);
+                return true;
+
             case R.id.remove:
                 myAdapter.remove10();
                 return true;
             case R.id.add:
                 myAdapter.addSeveral();
                 return true;
+
             case R.id.toFirst:
                 recyclerView.smoothScrollToPosition(0);
                 return true;
+
             case R.id.useDividers:
                 item.setChecked(!item.isChecked());
                 setDividerVisibility(item.isChecked());
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void setLayoutDirection(int direction) {
+        layoutManager.setOrientation(direction);
+    }
+
+    private void setPeriodicFunc(PeriodicLayoutManager.PeriodicFunc periodicFunc) {
+        layoutManager.setPeriodicFunc(periodicFunc);
+    }
+
+    private void setLineMode(boolean over) {
+        lineDecorator.setDrawOver(over);
+        recyclerView.invalidateItemDecorations();
+    }
+
     private void setDividerVisibility(boolean visible) {
-        RecyclerView.ItemDecoration decorator = getDividerDecorator(this);
+        RecyclerView.ItemDecoration decorator = getDividerDecorator(getActivity());
         if (visible) {
             recyclerView.addItemDecoration(decorator);
         } else {
@@ -126,7 +145,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private static List<MyItem> makeData() {
-        List<MyItem> result = new ArrayList<MyItem>();
+        List<MyItem> result = new ArrayList<>();
         for (int pos = 0; pos < 255; pos++) {
             result.add(new MyItem(Color.rgb(pos, pos, pos)));
         }

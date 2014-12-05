@@ -1,4 +1,4 @@
-package com.javernaut.recyclerviewtest;
+package com.javernaut.recyclerviewtest.stuff;
 
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
@@ -45,6 +45,7 @@ abstract class AbstractItemAnimator extends RecyclerView.ItemAnimator {
     protected static final class ChangeInfo {
         public RecyclerView.ViewHolder oldHolder, newHolder;
         public int fromX, fromY, toX, toY;
+
         private ChangeInfo(RecyclerView.ViewHolder oldHolder, RecyclerView.ViewHolder newHolder) {
             this.oldHolder = oldHolder;
             this.newHolder = newHolder;
@@ -178,6 +179,7 @@ abstract class AbstractItemAnimator extends RecyclerView.ItemAnimator {
             public void onAnimationStart(View view) {
                 dispatchRemoveStarting(holder);
             }
+
             @Override
             public void onAnimationEnd(View view) {
                 animation.setListener(null);
@@ -208,6 +210,7 @@ abstract class AbstractItemAnimator extends RecyclerView.ItemAnimator {
                     public void onAnimationStart(View view) {
                         dispatchAddStarting(holder);
                     }
+
                     @Override
                     public void onAnimationCancel(View view) {
                         ViewCompat.setAlpha(view, 1);
@@ -225,7 +228,7 @@ abstract class AbstractItemAnimator extends RecyclerView.ItemAnimator {
 
     @Override
     public final boolean animateMove(final RecyclerView.ViewHolder holder, int fromX, int fromY,
-                               int toX, int toY) {
+                                     int toX, int toY) {
         final View view = holder.itemView;
         fromX += ViewCompat.getTranslationX(holder.itemView);
         fromY += ViewCompat.getTranslationY(holder.itemView);
@@ -266,6 +269,7 @@ abstract class AbstractItemAnimator extends RecyclerView.ItemAnimator {
             public void onAnimationStart(View view) {
                 dispatchMoveStarting(holder);
             }
+
             @Override
             public void onAnimationCancel(View view) {
                 if (deltaX != 0) {
@@ -275,6 +279,7 @@ abstract class AbstractItemAnimator extends RecyclerView.ItemAnimator {
                     ViewCompat.setTranslationY(view, 0);
                 }
             }
+
             @Override
             public void onAnimationEnd(View view) {
                 animation.setListener(null);
@@ -287,7 +292,7 @@ abstract class AbstractItemAnimator extends RecyclerView.ItemAnimator {
 
     @Override
     public final boolean animateChange(RecyclerView.ViewHolder oldHolder, RecyclerView.ViewHolder newHolder,
-                                 int fromX, int fromY, int toX, int toY) {
+                                       int fromX, int fromY, int toX, int toY) {
         final float prevTranslationX = ViewCompat.getTranslationX(oldHolder.itemView);
         final float prevTranslationY = ViewCompat.getTranslationY(oldHolder.itemView);
         final float prevAlpha = ViewCompat.getAlpha(oldHolder.itemView);
@@ -325,6 +330,7 @@ abstract class AbstractItemAnimator extends RecyclerView.ItemAnimator {
             public void onAnimationStart(View view) {
                 dispatchChangeStarting(changeInfo.oldHolder, true);
             }
+
             @Override
             public void onAnimationEnd(View view) {
                 oldViewAnim.setListener(null);
@@ -345,6 +351,7 @@ abstract class AbstractItemAnimator extends RecyclerView.ItemAnimator {
                 public void onAnimationStart(View view) {
                     dispatchChangeStarting(changeInfo.newHolder, false);
                 }
+
                 @Override
                 public void onAnimationEnd(View view) {
                     newViewAnimation.setListener(null);
@@ -378,6 +385,7 @@ abstract class AbstractItemAnimator extends RecyclerView.ItemAnimator {
             endChangeAnimationIfNecessary(changeInfo, changeInfo.newHolder);
         }
     }
+
     private boolean endChangeAnimationIfNecessary(ChangeInfo changeInfo, RecyclerView.ViewHolder item) {
         boolean oldItem = false;
         if (changeInfo.newHolder == item) {

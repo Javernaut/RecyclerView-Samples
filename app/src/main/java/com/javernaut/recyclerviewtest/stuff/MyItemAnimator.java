@@ -1,4 +1,4 @@
-package com.javernaut.recyclerviewtest;
+package com.javernaut.recyclerviewtest.stuff;
 
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
@@ -58,6 +58,7 @@ public class MyItemAnimator extends AbstractItemAnimator {
                 public void onAnimationStart(View view) {
                     dispatchChangeStarting(changeInfo.newHolder, false);
                 }
+
                 @Override
                 public void onAnimationEnd(View view) {
                     newViewAnimation.setListener(null);

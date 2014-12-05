@@ -1,4 +1,4 @@
-package com.javernaut.recyclerviewtest;
+package com.javernaut.recyclerviewtest.stuff;
 
 /**
  * Some model item for valuable data.
