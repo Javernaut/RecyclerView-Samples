@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">RecyclerView</string>
+    <string name="app_name">RV</string>
     <string name="action_settings">Settings</string>
     <string name="menu_remove_10">Remove 10</string>
     <string name="menu_add_several">Add several</string>

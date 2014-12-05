@@ -18,9 +18,11 @@ import java.util.List;
 
 public class PeriodicFragment extends ButterKnifeFragment {
 
-    private static final String COLORS = "key_colors";
+    private static final String KEY_COLORS = "key_colors";
+    private static final String KEY_DIVIDERS = "key_dividers";
+
     private static RecyclerView.ItemDecoration dividerDecorator;
-    private static boolean useDividers = false; // simple to use a static field than handle save-restore cycle.
+    private boolean useDividers = false;
 
     @InjectView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -43,24 +45,33 @@ public class PeriodicFragment extends ButterKnifeFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         recyclerView.setHasFixedSize(true);
+
         recyclerView.setLayoutManager(layoutManager = new PeriodicLayoutManager(getActivity()));
-        recyclerView.setAdapter(myAdapter = adapterBySavedInstanceState(savedInstanceState));
+        recyclerView.setAdapter(myAdapter = adapterBySavedState(savedInstanceState));
+
         recyclerView.setItemAnimator(new MyItemAnimator());
         recyclerView.addItemDecoration(lineDecorator = new SingleLineDecorator(getActivity()));
-        setDividerVisibility(useDividers);
+
+        setDividerVisibility(useDividersBySavedState(savedInstanceState));
     }
 
-    private MyAdapter adapterBySavedInstanceState(Bundle savedInstanceState) {
+    private MyAdapter adapterBySavedState(Bundle savedInstanceState) {
         return savedInstanceState == null ?
                 new MyAdapter(getActivity(), makeData()) :
-                MyAdapter.fromIntegers(getActivity(), savedInstanceState.getIntegerArrayList(COLORS));
+                MyAdapter.fromIntegers(getActivity(), savedInstanceState.getIntegerArrayList(KEY_COLORS));
+    }
+
+    private static boolean useDividersBySavedState(Bundle savedInstanceState) {
+        return savedInstanceState != null && savedInstanceState.getInt(KEY_DIVIDERS, 0) == 1;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putIntegerArrayList(COLORS, myAdapter.toIntegers());
+        outState.putIntegerArrayList(KEY_COLORS, myAdapter.toIntegers());
+        outState.putInt(KEY_DIVIDERS, useDividers ? 1 : 0);
     }
 
     @Override
